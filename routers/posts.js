@@ -13,9 +13,21 @@ router.get('/', (req, res, next) => {
     })
 })
 
-router.get('/:id', (req, res) => {
+// show
+router.get('/:id', (req, res, next) => {
     const id = req.params.id
-    res.send(`Dettagli del post ${id}`)
+    const sql = 'SELECT * FROM posts WHERE id =?'
+
+    connection.query(sql, [id], (err, results) => {
+        if (err) return next(err)
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({
+                error: 'Not Found', message: 'Non trovato'
+            })
+        }
+        res.json(results[0])
+    })
 })
 
 router.post('/', (req, res) => {
