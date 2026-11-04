@@ -44,10 +44,21 @@ router.patch('/:id', (req, res) => {
     res.send(`Modifica parziale del post ${id}`)
 })
 
-router.delete('/:id', (req, res) => {
+// destroy
+router.delete('/:id', (req, res, next) => {
     const id = req.params.id
-    res.send(`Cancellazione del post ${id}`)
-})
+    const sql = 'DELETE FROM posts WHERE id = ?'
 
+    connection.query(sql, [id], (err, results) => {
+        if (err) return next(err)
+
+        if (results.affectedRows === 0) {
+            return res.status(404).json({
+                error: 'Not Found', message: 'Non trovato'
+            })
+        }
+        res.sendStatus(204)
+    })
+})
 
 module.exports = router
