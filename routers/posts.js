@@ -21,7 +21,7 @@ router.get('/:id', (req, res, next) => {
     connection.query(sql, [id], (err, results) => {
         if (err) return next(err)
 
-        if (results.affectedRows === 0) {
+        if (results.length === 0) {
             return res.status(404).json({
                 error: 'Not Found', message: 'Non trovato'
             })
